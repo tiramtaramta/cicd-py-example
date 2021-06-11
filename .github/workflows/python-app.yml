@@ -1,36 +1,42 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
+# mivel hoztuk létre
+# kulcs : érték
 name: Python application
 
+# kulcs: lista. azon belül kulcs : érték
+# on push, vagy on pull_request
+# ha a fejlesztő push-ol a main ágba, akkor lefut ez a workflow (pull-request esetén is)
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
+# build az egyetlen kulcs jelenleg. a runs-on a környezet, majd a steps a lépések
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
+    - uses: actions/checkout@v2 #szerezd meg a kódot
+    - name: Set up Python 3.9  #telepítsük a pythont
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
-    - name: Install dependencies
+    - name: Install dependencies #telepítsük fel a requirements file-ból az összes többi dependenciát
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
+    - name: Lint with flake8 # flake 8 szintaxis elemző lefuttatása
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+    - name: Test with pytest #futtassuk le az összes tesztet pytest segítségével
       run: |
         pytest
